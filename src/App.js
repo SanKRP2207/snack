@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import "./App.css";
@@ -12,6 +11,10 @@ const SnakeGame = () => {
   const [direction, setDirection] = useState("RIGHT");
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
+  const [bestScore, setBestScore] = useState(
+    Number(localStorage.getItem("bestScore")) || 0
+  );
+
   const boardRef = useRef(null);
 
   useEffect(() => {
@@ -32,7 +35,7 @@ const SnakeGame = () => {
         return prevDirection; // If invalid move, keep the same direction
       });
     };
-    
+
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, []);
@@ -69,7 +72,7 @@ const SnakeGame = () => {
             x: Math.floor(Math.random() * GRID_SIZE),
             y: Math.floor(Math.random() * GRID_SIZE),
           });
-          setScore(score + 10);
+          setScore((prevScore) => prevScore + 10);
         } else {
           newSnake.pop();
         }
@@ -82,6 +85,13 @@ const SnakeGame = () => {
           newSnake.slice(1).some((segment) => segment.x === head.x && segment.y === head.y)
         ) {
           setGameOver(true);
+
+          // Update best score if the current score is higher
+          if (score > bestScore) {
+            setBestScore(score);
+            localStorage.setItem("bestScore", score);
+          }
+
           return prevSnake;
         }
 
@@ -91,18 +101,20 @@ const SnakeGame = () => {
 
     const interval = setInterval(moveSnake, SPEED);
     return () => clearInterval(interval);
-  }, [direction, food, gameOver]);
+  }, [direction, food, gameOver, score, bestScore]);
 
   return (
     <div className="game-container">
       <div className="score-container">
-        <h1>Score {score}</h1>
+        <h1>Score: {score}</h1>
+      </div>
+      <div className="score-container-h6">
+        <h6>Best Score: {bestScore}</h6>
       </div>
       {gameOver ? (
         <div className="game-over">Game Over! Press Refresh to Play Again.</div>
-        ) : (
-          <div ref={boardRef} className="board">
-          
+      ) : (
+        <div ref={boardRef} className="board">
           {snake.map((segment, index) => (
             <motion.div
               key={index}
@@ -114,17 +126,15 @@ const SnakeGame = () => {
             />
           ))}
 
-          ))}
           <motion.div
-            key={`${food.x}-${food.y}`}  // Ensure food re-renders when position changes
+            key={`${food.x}-${food.y}`} // Ensure food re-renders when position changes
             className="food"
             initial={{ scale: 1 }}
             animate={{ scale: 1 }}
-            exit={{ scale: 0, opacity: 0 }}  // Shrinking effect when eaten
-            transition={{ duration: 0.2 }}   // Smooth transition
+            exit={{ scale: 0, opacity: 0 }} // Shrinking effect when eaten
+            transition={{ duration: 0.2 }} // Smooth transition
             style={{ left: food.x * 20, top: food.y * 20 }}
           />
-
         </div>
       )}
     </div>
