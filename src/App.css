@@ -71,3 +71,24 @@
   border-radius: 5px;
   text-align: center;
 }
+
+
+.touch-button {
+  position: absolute;
+  width: 40px; /* Adjust size as needed */
+  height: 40px; /* Adjust size as needed */
+  top: 95%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10; /* Ensure it appears above other elements */
+}
+
+.touch-button:focus {
+  align-items: center;
+}
