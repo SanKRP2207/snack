@@ -157,7 +157,7 @@ const SnakeGame = () => {
       <div className="touch-button">
           <button onClick={() => direction !== "RIGHT" && setDirection("LEFT")}>⬅️</button>
         <div className="touch-button2">
-        <button onClick={() => direction !== "DOWN" && setDirection("UP")}>⬆️</button>
+        <button className="upbutton" onClick={() => direction !== "DOWN" && setDirection("UP")}>⬆️</button>
         <button onClick={() => direction !== "UP" && setDirection("DOWN")}>⬇️</button>
         </div>
           <button onClick={() => direction !== "LEFT" && setDirection("RIGHT")}>➡️</button>
